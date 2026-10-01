@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!-- Tracking Form Page -->
+    <template id="tracking_form_page" name="Envia Tracking Form">
+        <t t-call="website.layout">
+            <div class="container py-5">
+                <div class="row justify-content-center">
+                    <div class="col-lg-6 col-md-8">
+                        <div class="card shadow-sm">
+                            <div class="card-body p-4 text-center">
+                                <h2 class="mb-3">Rastrear envío</h2>
+                                <p class="text-muted mb-4">Ingresá tu número de seguimiento para consultar el estado de tu envío.</p>
+                                <form id="tracking-form">
+                                    <div class="input-group mb-3">
+                                        <input type="text" id="tracking-input" class="form-control form-control-lg"
+                                               placeholder="Número de seguimiento" required="required"/>
+                                        <button class="btn btn-primary btn-lg" type="submit">Rastrear</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <script>
+                document.getElementById('tracking-form').addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    var ref = document.getElementById('tracking-input').value.trim();
+                    if (ref) window.location.href = '/track-envia/' + encodeURIComponent(ref);
+                });
+            </script>
+        </t>
+    </template>
+
+    <!-- Tracking Result Page -->
+    <template id="tracking_result_page" name="Envia Tracking Result">
+        <t t-call="website.layout">
+            <div class="container py-5">
+                <div class="row justify-content-center">
+                    <div class="col-lg-8">
+
+                        <!-- Header -->
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-body p-4">
+                                <div class="d-flex justify-content-between align-items-start flex-wrap">
+                                    <div>
+                                        <h4 class="mb-1">
+                                            <t t-if="envia and envia.get('carrier_description')"
+                                               t-esc="envia['carrier_description']"/>
+                                            <t t-else="" t-esc="carrier_name"/>
+                                        </h4>
+                                        <t t-if="envia and envia.get('service_description')">
+                                            <p class="text-muted mb-1" t-esc="envia['service_description']"/>
+                                        </t>
+                                        <p class="text-muted mb-2">
+                                            Seguimiento: <strong class="text-dark" t-esc="tracking_ref"/>
+                                        </p>
+                                        <p class="mb-0" t-if="city">
+                                            Destino: <span t-esc="city"/>
+                                            <t t-if="state_name">, <span t-esc="state_name"/></t>
+                                            <t t-if="country_name"> - <span t-esc="country_name"/></t>
+                                        </p>
+                                    </div>
+                                    <div class="mt-2 mt-md-0">
+                                        <t t-if="envia and envia.get('status_label')">
+                                            <span class="badge fs-6"
+                                                  t-attf-style="background-color: #{envia['status_color'] or '#6c757d'}"
+                                                  t-esc="envia['status_label']"/>
+                                        </t>
+                                        <t t-else="">
+                                            <span class="badge bg-secondary fs-6">
+                                                <t t-if="is_done">Despachado</t>
+                                                <t t-elif="has_tracking_ref">Preparando</t>
+                                                <t t-else="">Pendiente</t>
+                                            </span>
+                                        </t>
+                                    </div>
+                                </div>
+
+                                <!-- Estimated delivery -->
+                                <t t-if="envia and envia.get('estimated_delivery') and envia.get('pickup_date')">
+                                    <div class="mt-3">
+                                        <div class="alert alert-info mb-0 py-2">
+                                            Entrega estimada: <strong t-esc="envia['estimated_delivery']"/>
+                                        </div>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+
+                        <!-- Timeline -->
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-body p-4">
+                                <h5 class="mb-4">Estado del envío</h5>
+                                <div class="envia-timeline">
+
+                                    <!-- 1. Etiqueta de envío creada -->
+                                    <t t-if="has_tracking_ref">
+                                        <div class="envia-timeline-item completed">
+                                            <div class="envia-timeline-dot"></div>
+                                            <div class="envia-timeline-content">
+                                                <strong>Etiqueta de envío creada</strong>
+                                                <t t-if="scheduled_date">
+                                                    <br/>
+                                                    <small class="text-muted">
+                                                        <t t-esc="scheduled_date.strftime('%d/%m/%Y %H:%M')"/>
+                                                    </small>
+                                                </t>
+                                            </div>
+                                        </div>
+                                    </t>
+
+                                    <!-- 2. Entregado al transportista -->
+                                    <t t-if="is_done">
+                                        <div class="envia-timeline-item completed">
+                                            <div class="envia-timeline-dot"></div>
+                                            <div class="envia-timeline-content">
+                                                <strong>Entregado al transportista</strong>
+                                                <t t-if="date_done">
+                                                    <br/>
+                                                    <small class="text-muted">
+                                                        <t t-esc="date_done.strftime('%d/%m/%Y %H:%M')"/>
+                                                    </small>
+                                                </t>
+                                            </div>
+                                        </div>
+                                    </t>
+
+                                    <!-- 3. Registrado por el transportista (pickup) -->
+                                    <t t-if="envia and envia.get('pickup_date')">
+                                        <div class="envia-timeline-item completed">
+                                            <div class="envia-timeline-dot"></div>
+                                            <div class="envia-timeline-content">
+                                                <strong>Registrado por el transportista</strong>
+                                                <br/>
+                                                <small class="text-muted" t-esc="envia['pickup_date']"/>
+                                            </div>
+                                        </div>
+                                    </t>
+
+                                    <!-- 4+. Event history from API -->
+                                    <t t-if="envia and envia.get('events')">
+                                        <t t-foreach="envia['events']" t-as="event">
+                                            <t t-set="evt_class" t-value="'active' if event_last and not (envia.get('delivered_at')) else 'completed'"/>
+                                            <div t-attf-class="envia-timeline-item #{evt_class}">
+                                                <div class="envia-timeline-dot"></div>
+                                                <div class="envia-timeline-content">
+                                                    <strong t-esc="event['description']"/>
+                                                    <t t-if="event.get('date')">
+                                                        <br/>
+                                                        <small class="text-muted" t-esc="event['date']"/>
+                                                    </t>
+                                                    <t t-if="event.get('location')">
+                                                        <br/>
+                                                        <small class="envia-timeline-location" t-esc="event['location']"/>
+                                                    </t>
+                                                </div>
+                                            </div>
+                                        </t>
+                                    </t>
+
+                                    <!-- N. Entregado al destinatario -->
+                                    <t t-if="envia and envia.get('delivered_at')">
+                                        <div class="envia-timeline-item delivered">
+                                            <div class="envia-timeline-dot"></div>
+                                            <div class="envia-timeline-content">
+                                                <strong>Entregado al destinatario</strong>
+                                                <t t-if="envia.get('signed_by')">
+                                                    <span class="text-muted"> - Firmado por: <t t-esc="envia['signed_by']"/></span>
+                                                </t>
+                                                <br/>
+                                                <small class="text-muted" t-esc="envia['delivered_at']"/>
+                                            </div>
+                                        </div>
+                                    </t>
+
+                                </div>
+
+                                <!-- API error fallback -->
+                                <t t-if="not envia and is_done">
+                                    <small class="text-muted mt-3 d-block">
+                                        No se pudo obtener información en tiempo real del transportista.
+                                    </small>
+                                </t>
+                            </div>
+                        </div>
+
+                        <!-- Products -->
+                        <t t-if="products">
+                            <div class="card shadow-sm mb-4">
+                                <div class="card-body p-4">
+                                    <h5 class="mb-3">Productos enviados</h5>
+                                    <ul class="list-unstyled mb-0">
+                                        <t t-foreach="products" t-as="product">
+                                            <li class="d-flex justify-content-between py-2 border-bottom">
+                                                <span t-esc="product['name']"/>
+                                                <span class="text-muted">
+                                                    x<t t-esc="int(product['qty'])"/>
+                                                </span>
+                                            </li>
+                                        </t>
+                                    </ul>
+                                </div>
+                            </div>
+                        </t>
+
+                        <!-- External tracking link -->
+                        <t t-if="envia and envia.get('track_url_site')">
+                            <div class="text-center mb-4">
+                                <a t-att-href="envia['track_url_site']"
+                                   class="btn btn-outline-primary" target="_blank">
+                                    Ver en <t t-esc="envia.get('carrier_description') or 'sitio del transportista'"/>
+                                </a>
+                            </div>
+                        </t>
+
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- Tracking Not Found -->
+    <template id="tracking_not_found" name="Envia Tracking Not Found">
+        <t t-call="website.layout">
+            <div class="container py-5">
+                <div class="row justify-content-center">
+                    <div class="col-lg-6 col-md-8 text-center">
+                        <div class="card shadow-sm">
+                            <div class="card-body p-4">
+                                <h3 class="mb-3">Envío no encontrado</h3>
+                                <p class="text-muted">
+                                    No se encontró un envío con el número de seguimiento
+                                    <strong t-esc="tracking_ref"/>.
+                                </p>
+                                <p class="text-muted">Verificá que el número sea correcto e intentá nuevamente.</p>
+                                <a href="/track-envia" class="btn btn-primary mt-2">Intentar de nuevo</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+</odoo>

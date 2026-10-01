@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_picking_form_envia" model="ir.ui.view">
+        <field name="name">stock.picking.form.envia</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock_delivery.view_picking_withcarrier_out_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group[@name='carrier_data']" position="after">
+                <group string="Envia.com Overrides" name="envia_overrides"
+                       invisible="delivery_type != 'envia'">
+                    <div colspan="2" class="text-muted">
+                        Leave an override at 0 to use the real data. The value
+                        next to each field is what will be sent to Envia.com.
+                    </div>
+                    <label for="envia_declared_value"/>
+                    <div class="o_row">
+                        <field name="envia_declared_value"/>
+                        <span class="text-muted">→ will send:</span>
+                        <field name="envia_planned_declared_value" class="text-muted"/>
+                    </div>
+                    <label for="envia_shipping_weight"/>
+                    <div class="o_row">
+                        <field name="envia_shipping_weight"/>
+                        <span class="text-muted">→ will send:</span>
+                        <field name="envia_planned_weight" class="text-muted"/>
+                        <span class="text-muted">kg (0.01 – 10)</span>
+                    </div>
+                    <label for="envia_package_length"/>
+                    <div class="o_row">
+                        <field name="envia_package_length"/>
+                        <span class="text-muted">→ will send:</span>
+                        <field name="envia_planned_length" class="text-muted"/>
+                        <span class="text-muted">cm (1 – 100)</span>
+                    </div>
+                    <label for="envia_package_width"/>
+                    <div class="o_row">
+                        <field name="envia_package_width"/>
+                        <span class="text-muted">→ will send:</span>
+                        <field name="envia_planned_width" class="text-muted"/>
+                        <span class="text-muted">cm (1 – 100)</span>
+                    </div>
+                    <label for="envia_package_height"/>
+                    <div class="o_row">
+                        <field name="envia_package_height"/>
+                        <span class="text-muted">→ will send:</span>
+                        <field name="envia_planned_height" class="text-muted"/>
+                        <span class="text-muted">cm (1 – 100)</span>
+                    </div>
+                    <div colspan="2">
+                        <button name="action_envia_sync_address"
+                                string="Sync Address to Envia.com"
+                                type="object"
+                                class="btn-link"
+                                icon="fa-cloud-upload"
+                                invisible="delivery_type != 'envia'"/>
+                    </div>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>

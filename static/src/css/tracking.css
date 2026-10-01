@@ -1,0 +1,94 @@
+/* Envia Tracking Timeline */
+
+.envia-timeline {
+    position: relative;
+    padding-left: 30px;
+}
+
+.envia-timeline::before {
+    content: '';
+    position: absolute;
+    left: 9px;
+    top: 8px;
+    bottom: 8px;
+    width: 2px;
+    background: #ddd;
+}
+
+.envia-timeline-item {
+    position: relative;
+    padding-bottom: 20px;
+}
+
+.envia-timeline-item:last-child {
+    padding-bottom: 0;
+}
+
+.envia-timeline-dot {
+    position: absolute;
+    left: -27px;
+    top: 4px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #ccc;
+    border: 2px solid #fff;
+    box-shadow: 0 0 0 2px #ccc;
+    z-index: 1;
+}
+
+.envia-timeline-item.completed .envia-timeline-dot {
+    background: #ffcc00;
+    box-shadow: 0 0 0 2px #ffcc00;
+}
+
+.envia-timeline-item.active .envia-timeline-dot {
+    background: #ffcc00;
+    box-shadow: 0 0 0 2px #ffcc00;
+    animation: envia-pulse 1.5s ease-in-out infinite;
+}
+
+.envia-timeline-item.delivered .envia-timeline-dot {
+    background: #28a745;
+    box-shadow: 0 0 0 2px #28a745;
+}
+
+@keyframes envia-pulse {
+    0%, 100% { box-shadow: 0 0 0 2px #ffcc00; }
+    50% { box-shadow: 0 0 0 6px rgba(255, 204, 0, 0.3); }
+}
+
+.envia-timeline-content {
+    padding-left: 8px;
+}
+
+.envia-timeline-content strong {
+    color: #444;
+}
+
+.envia-timeline-content .text-muted {
+    font-size: 0.85em;
+}
+
+.envia-timeline-location {
+    font-size: 0.85em;
+    color: #888;
+}
+
+/* Status badge */
+#status-badge {
+    font-size: 0.9em;
+    padding: 6px 14px;
+}
+
+/* Responsive */
+@media (max-width: 576px) {
+    .envia-timeline {
+        padding-left: 24px;
+    }
+    .envia-timeline-dot {
+        left: -20px;
+        width: 12px;
+        height: 12px;
+    }
+}

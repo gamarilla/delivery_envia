@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_delivery_carrier_form_envia" model="ir.ui.view">
+        <field name="name">delivery.carrier.form.envia</field>
+        <field name="model">delivery.carrier</field>
+        <field name="inherit_id" ref="delivery.view_delivery_carrier_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group[@name='provider_details']" position="inside">
+                <field name="envia_api_key_sandbox"
+                       invisible="delivery_type != 'envia'"
+                       required="delivery_type == 'envia' and not prod_environment"
+                       password="True"/>
+                <field name="envia_api_key_production"
+                       invisible="delivery_type != 'envia'"
+                       required="delivery_type == 'envia' and prod_environment"
+                       password="True"/>
+                <field name="envia_carrier_code"
+                       invisible="delivery_type != 'envia'"
+                       required="delivery_type == 'envia'"/>
+                <field name="envia_carrier_name"
+                       invisible="delivery_type != 'envia'"/>
+                <field name="envia_service_code"
+                       invisible="delivery_type != 'envia'"/>
+                <field name="envia_service_name"
+                       invisible="delivery_type != 'envia'"/>
+                <field name="envia_default_package_type_id"
+                       invisible="delivery_type != 'envia'"
+                       required="delivery_type == 'envia'"/>
+                <field name="envia_duties_payment"
+                       invisible="delivery_type != 'envia'"/>
+                <field name="envia_export_reason"
+                       invisible="delivery_type != 'envia'"/>
+                <button name="envia_action_fetch_carriers"
+                        string="Fetch Available Carriers"
+                        type="object"
+                        class="oe_link"
+                        invisible="delivery_type != 'envia'"/>
+            </xpath>
+            <xpath expr="//page[@name='destination']" position="after">
+                <page string="Envia.com Carriers" name="envia_carriers"
+                      invisible="delivery_type != 'envia'">
+                    <field name="envia_available_carriers"
+                           readonly="1"
+                           widget="text"
+                           placeholder="Click 'Fetch Available Carriers' to populate this list."/>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>
