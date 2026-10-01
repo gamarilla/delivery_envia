@@ -1,40 +1,40 @@
-# Envia.com shipping connector for Odoo 19 Community
+# Conector de envíos Envia.com para Odoo 19 Community
 
-Odoo shipping method (`delivery.carrier`, provider **Envia.com**) built on the public Envia.com REST API.
-Quotes at checkout, generates labels on delivery validation, exposes a public tracking page and
-validates postal codes in the address forms. Works with any carrier Envia.com offers in your country
-(Correo Argentino, Andreani, OCA, DHL, FedEx, Estafeta, …).
+Método de envío de Odoo (`delivery.carrier`, proveedor **Envia.com**) construido sobre la API REST pública de
+Envia.com. Cotiza en el checkout, genera etiquetas al validar la entrega, publica una página de seguimiento y
+valida los códigos postales en los formularios de dirección. Funciona con cualquier transportista que
+Envia.com ofrezca en tu país (Correo Argentino, Andreani, OCA, DHL, FedEx, Estafeta, …).
 
-Developed and used in production by a small manufacturer shipping from Argentina to customers
-worldwide. Licensed LGPL-3.
+Desarrollado y usado en producción por un pequeño fabricante que despacha desde Argentina a clientes de todo
+el mundo. Licencia LGPL-3. [README in English](README.en.md).
 
-## Features
+## Funcionalidades
 
-| Area | What it does |
+| Área | Qué hace |
 |---|---|
-| Rates | `POST /ship/rate/` per order at checkout. Price converted to the order currency. Delivery estimate shown as a hint. Refuses to quote (instead of showing a wrong price) when the carrier cannot take a multi-package shipment or when DDP customs data is incomplete. |
-| Labels | `POST /ship/generate/` when the delivery order is validated. Label PDF attached to the picking, tracking number stored. Validation runs inside a savepoint: if the label fails, nothing is validated and a wizard offers *retry / validate without label / cancel*. |
-| Pickup points ("a sucursal") | Services whose code ends in `suc` deliver to a branch. The customer picks the branch at checkout using Odoo 19's native pickup-point selector, fed from `GET /branches/{country}?zipcode=…&carrier=…`. Manual override per contact (`Envia Branch Code`). |
-| International / customs | Per-product HS code, customs description and declared (insurance) value; `customsSettings` with duties payment (recipient / sender / prepaid DDP) and export reason. DDP quotes are rejected if Envia returns no landed cost, so you never pay the customer's duties by surprise. |
-| Package overrides | Per picking: weight, dimensions and declared value overrides, with a live preview of what will be sent. Validation of Envia's limits (0.01–10 kg, 1–100 cm). |
-| Address book | Origin and destination addresses synced to the Envia address book (ids cached on partner/carrier). Addresses normalised through the Geocodes API (state codes, Colombian DANE codes). |
-| Tracking | `/track-envia/<ref>` public page (live `generaltrack` events) + tracking link on the picking. |
-| Postal code validation | Address forms (checkout and portal) validate the postal code against Envia's per-country rules (`generic-form`) and existence (`geocodes`), inline (JS) and on submit (server). Fails open if Envia is unreachable. |
-| Error messages | Envia error codes (1125, 1126, 1127, 1129, 1170, 1220, 1300) mapped to actionable, translatable messages; provider name hidden from customers at checkout. |
+| Cotización | `POST /ship/rate/` por pedido en el checkout. Precio convertido a la moneda del pedido. Estimación de entrega como aviso. Se niega a cotizar (en vez de mostrar un precio equivocado) cuando el transportista no acepta envíos multibulto o cuando faltan datos aduaneros para DDP. |
+| Etiquetas | `POST /ship/generate/` al validar la orden de entrega. Etiqueta PDF adjunta al picking, número de seguimiento guardado. La validación corre dentro de un savepoint: si la etiqueta falla no se valida nada y un asistente ofrece *reintentar / validar sin etiqueta / cancelar*. |
+| Puntos de retiro (“a sucursal”) | Los servicios cuyo código termina en `suc` entregan en sucursal. El cliente elige la sucursal en el checkout con el selector nativo de puntos de retiro de Odoo 19, alimentado por `GET /branches/{país}?zipcode=…&carrier=…`. Anulación manual por contacto (`Código de sucursal Envia`). |
+| Internacional / aduana | Código HS, descripción aduanera y valor declarado (seguro) por producto; `customsSettings` con pagador de impuestos (destinatario / remitente / DDP prepago) y motivo de exportación. Las cotizaciones DDP se rechazan si Envia no devuelve el costo en destino (*landed cost*), para no pagar los impuestos del cliente por sorpresa. |
+| Anulaciones por bulto | Por entrega: peso, dimensiones y valor declarado, con vista previa de lo que se va a enviar. Validación de los límites de Envia (0,01–10 kg, 1–100 cm). |
+| Libreta de direcciones | Direcciones de origen y destino sincronizadas con la libreta de Envia (ids cacheados en contacto/transportista). Direcciones normalizadas con la API Geocodes (códigos de provincia, códigos DANE de Colombia). |
+| Seguimiento | Página pública `/track-envia/<ref>` (eventos en vivo de `generaltrack`) y enlace de seguimiento en el picking. |
+| Validación de código postal | Los formularios de dirección (checkout y portal) validan el código postal contra las reglas por país de Envia (`generic-form`) y su existencia (`geocodes`), en línea (JS) y al enviar (servidor). Si Envia no responde, deja pasar. |
+| Mensajes de error | Códigos de error de Envia (1125, 1126, 1127, 1129, 1170, 1220, 1300) traducidos a mensajes accionables; el nombre del proveedor no se muestra al cliente en el checkout. |
 
-## Setup
+## Configuración
 
-1. Install the module (depends on `stock_delivery`, `website_sale`, `portal`).
-2. Inventory → Configuration → Shipping Methods → new method, provider **Envia.com**:
-   sandbox/production API keys, carrier code (e.g. `correoArgentino`), service code (e.g. `standard_dom`
-   or `standard_suc`), default package type. Use *Fetch Available Carriers* to list codes.
-3. For international shipments: fill HS code, country of origin, customs description and declared
-   value on products; choose the duties payment mode on the method.
-4. Optional: `Envia Branch Code` on a contact forces a destination branch.
+1. Instalar el módulo (depende de `stock_delivery`, `website_sale`, `portal`).
+2. Inventario → Configuración → Métodos de envío → nuevo método, proveedor **Envia.com**: claves API de
+   sandbox/producción, código de transportista (p. ej. `correoArgentino`), código de servicio (p. ej.
+   `standard_dom` o `standard_suc`), tipo de paquete por defecto. *Obtener transportistas disponibles* lista los códigos.
+3. Para envíos internacionales: completar código HS, país de origen, descripción aduanera y valor declarado en
+   los productos; elegir el modo de pago de impuestos en el método.
+4. Opcional: `Código de sucursal Envia` en un contacto fuerza la sucursal de destino.
 
-## Notes
+## Notas
 
-- Odoo 19 only (uses `_validate_address_values`, `pickup_location_data`, `type='jsonrpc'` routes).
-  The Odoo 17 version lives in the history of this repository.
-- The `/branches` endpoint returns at most 300 entries unfiltered; always query with `zipcode`.
-- No data about the publisher is embedded: origin address comes from the warehouse, keys from the method.
+- Solo Odoo 19 (usa `_validate_address_values`, `pickup_location_data` y rutas `type='jsonrpc'`).
+  La versión para Odoo 17 está en la rama `17.0` de este repositorio.
+- El endpoint `/branches` devuelve como máximo 300 entradas sin filtro; consultar siempre con `zipcode`.
+- No incluye ningún dato del editor: la dirección de origen sale del almacén y las claves del método de envío.
