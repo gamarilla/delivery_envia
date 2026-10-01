@@ -10,7 +10,7 @@
                         <div class="card shadow-sm">
                             <div class="card-body p-4 text-center">
                                 <h2 class="mb-3">Rastrear envío</h2>
-                                <p class="text-muted mb-4">Ingresá tu número de seguimiento para consultar el estado de tu envío.</p>
+                                <p class="text-muted mb-4">Ingresa tu número de seguimiento para consultar el estado de tu envío.</p>
                                 <form id="tracking-form">
                                     <div class="input-group mb-3">
                                         <input type="text" id="tracking-input" class="form-control form-control-lg"
@@ -234,7 +234,7 @@
                                     No se encontró un envío con el número de seguimiento
                                     <strong t-esc="tracking_ref"/>.
                                 </p>
-                                <p class="text-muted">Verificá que el número sea correcto e intentá nuevamente.</p>
+                                <p class="text-muted">Verifica que el número sea correcto e intenta nuevamente.</p>
                                 <a href="/track-envia" class="btn btn-primary mt-2">Intentar de nuevo</a>
                             </div>
                         </div>
