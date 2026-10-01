@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="product_template_envia_insurance" model="ir.ui.view">
+        <field name="name">product.template.form.envia.insurance</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="stock_delivery.product_template_hs_code"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='country_of_origin']" position="after">
+                <field name="envia_insurance_value" string="Declared Value (Insurance)"/>
+                <field name="envia_export_description" string="Customs Description"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

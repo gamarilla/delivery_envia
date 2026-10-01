@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="envia_shipment_error_wizard_form" model="ir.ui.view">
+        <field name="name">envia.shipment.error.wizard.form</field>
+        <field name="model">envia.shipment.error.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Envia.com Shipment Error">
+                <group>
+                    <div class="alert alert-warning" role="alert" colspan="2">
+                        <strong>Envia.com could not generate the shipment label.</strong>
+                        <br/>
+                        The destination address has been saved in your Envia.com address book.
+                    </div>
+                    <field name="error_message" widget="text" colspan="2"/>
+                    <field name="picking_id" invisible="1"/>
+                </group>
+                <footer>
+                    <button name="action_retry" string="Retry" type="object" class="btn-primary"/>
+                    <button name="action_address_only" string="Validate without label" type="object" class="btn-warning"/>
+                    <button name="action_cancel" string="Cancel" type="object" class="btn-secondary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

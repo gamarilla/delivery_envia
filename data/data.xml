@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="product_product_delivery_envia" model="product.product">
+        <field name="name">Envia.com Shipping</field>
+        <field name="default_code">DELIVERY_ENVIA</field>
+        <field name="type">service</field>
+        <field name="categ_id" ref="delivery.product_category_deliveries"/>
+        <field name="sale_ok" eval="False"/>
+        <field name="purchase_ok" eval="False"/>
+        <field name="list_price">0</field>
+        <!-- Invoice at order time so the shipping line is carried into the
+             invoice even when nothing has been delivered yet (international
+             shipments don't get qty_delivered updated by our flow). -->
+        <field name="invoice_policy">order</field>
+    </record>
+</odoo>

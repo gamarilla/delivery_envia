@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_partner_form_envia" model="ir.ui.view">
+        <field name="name">res.partner.form.envia</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='vat']" position="after">
+                <field name="envia_branch_code"
+                       placeholder="e.g. SKA"
+                       help="Set this when the customer should receive shipments at a Correo Argentino / Andreani branch ('a sucursal'). Get the code from GET https://queries.envia.com/branches/AR."/>
+            </xpath>
+        </field>
+    </record>
+</odoo>
