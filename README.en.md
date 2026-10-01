@@ -20,6 +20,7 @@ worldwide. Licensed LGPL-3. [README en español](README.md).
 | Address book | Origin and destination addresses synced to the Envia address book (ids cached on partner/carrier). Addresses normalised through the Geocodes API (state codes, Colombian DANE codes). |
 | Tracking | `/track-envia/<ref>` public page (live `generaltrack` events) + tracking link on the picking. |
 | Postal code validation | Address forms (checkout and portal) validate the postal code against Envia's per-country rules (`generic-form`) and existence (`geocodes`), inline (JS) and on submit (server). Fails open if Envia is unreachable. |
+| Recipient tax ID | `get_tax_id_rules(country_code)` tells whether Envia requires the recipient's identification number for a country (currently only Brazil: CPF/CNPJ), from `generic-form`. Other addons can use it to make the field mandatory in the address form. Cached 24 h; returns `None` if Envia is unreachable. |
 | Error messages | Envia error codes (1125, 1126, 1127, 1129, 1170, 1220, 1300) mapped to actionable, translatable messages; provider name hidden from customers at checkout. |
 
 ## Setup

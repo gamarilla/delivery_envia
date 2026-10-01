@@ -152,6 +152,47 @@ def _get_zip_rules(country_code):
     return rules
 
 
+_TAX_ID_RULES_CACHE = {}  # {country_code: (fetched_at_epoch, rules_or_None)}
+
+
+def get_tax_id_rules(country_code):
+    """Reglas del número de identificación fiscal del destinatario según Envia (generic-form público,
+    campo ``identificationNumber``): {'visible', 'required', 'max', 'label_key'} o None si no se pudo
+    consultar (los llamadores deben fallar abierto). Hoy Envia solo lo exige para Brasil (CPF/CNPJ).
+    ``label_key`` es la clave de traducción interna de Envia (p. ej. 'createLabel.addressInfo.cnpj'):
+    sirve de pista, no como nombre a mostrar. Cache 24 h por país."""
+    country_code = (country_code or '').strip().upper()
+    if not country_code:
+        return None
+    now = time.time()
+    cached = _TAX_ID_RULES_CACHE.get(country_code)
+    if cached and (now - cached[0]) < _ZIP_RULES_TTL_SECONDS:
+        return cached[1]
+    try:
+        resp = requests.get(
+            f"{QUERIES_API_PROD}/generic-form",
+            params={'country_code': country_code, 'form': 'address_info'},
+            timeout=6)
+        resp.raise_for_status()
+        fields_def = resp.json()
+    except Exception as e:
+        _logger.warning("Envia tax-id rules fetch failed for %s: %s", country_code, e)
+        _TAX_ID_RULES_CACHE[country_code] = (now - _ZIP_RULES_TTL_SECONDS + 300, None)
+        return None
+    rules = None
+    for f in fields_def if isinstance(fields_def, list) else []:
+        if isinstance(f, dict) and f.get('fieldId') == 'identificationNumber':
+            rules = {
+                'visible': bool(f.get('visible')),
+                'required': bool((f.get('rules') or {}).get('required')),
+                'max': (f.get('rules') or {}).get('max'),
+                'label_key': f.get('fieldLabelLang'),
+            }
+            break
+    _TAX_ID_RULES_CACHE[country_code] = (now, rules)
+    return rules
+
+
 def _zip_exists(country_code, postal_code):
     """Check a postal code against the Envia geocodes API.
 

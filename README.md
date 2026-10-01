@@ -20,6 +20,7 @@ el mundo. Licencia LGPL-3. [README in English](README.en.md).
 | Libreta de direcciones | Direcciones de origen y destino sincronizadas con la libreta de Envia (ids cacheados en contacto/transportista). Direcciones normalizadas con la API Geocodes (códigos de provincia, códigos DANE de Colombia). |
 | Seguimiento | Página pública `/track-envia/<ref>` (eventos en vivo de `generaltrack`) y enlace de seguimiento en el picking. |
 | Validación de código postal | Los formularios de dirección (checkout y portal) validan el código postal contra las reglas por país de Envia (`generic-form`) y su existencia (`geocodes`), en línea (JS) y al enviar (servidor). Si Envia no responde, deja pasar. |
+| Identificación fiscal del destinatario | `get_tax_id_rules(código_país)` informa si Envia exige el número de identificación del destinatario para ese país (hoy solo Brasil: CPF/CNPJ), según `generic-form`. Lo pueden usar otros addons para hacer obligatorio el campo en el formulario de dirección. Cache 24 h; si Envia no responde, devuelve `None`. |
 | Mensajes de error | Códigos de error de Envia (1125, 1126, 1127, 1129, 1170, 1220, 1300) traducidos a mensajes accionables; el nombre del proveedor no se muestra al cliente en el checkout. |
 
 ## Configuración
