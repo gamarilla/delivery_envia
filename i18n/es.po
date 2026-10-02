@@ -1,0 +1,86 @@
+# Translation of Odoo Server.
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 19.0\n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+
+#. module: delivery_envia
+#. odoo-python
+#: code:addons/delivery_envia/models/delivery_carrier.py:0
+msgid "Could not calculate shipping cost for this route."
+msgstr "No se pudo calcular el costo de envío para este destino."
+
+#. module: delivery_envia
+#. odoo-python
+#: code:addons/delivery_envia/models/delivery_carrier.py:0
+msgid "Could not reach the shipping service. Please try again later."
+msgstr "No pudimos conectar con el servicio de envíos. Intenta de nuevo en unos minutos."
+
+#. module: delivery_envia
+#. odoo-python
+#: code:addons/delivery_envia/models/delivery_carrier.py:0
+msgid "Estimated delivery: %s (%s %s)"
+msgstr "Entrega estimada: %s (%s %s)"
+
+#. module: delivery_envia
+#. odoo-python
+#: code:addons/delivery_envia/models/delivery_carrier.py:0
+msgid "Invalid postal code format for the destination country."
+msgstr "El código postal no tiene el formato del país de destino."
+
+#. module: delivery_envia
+#. odoo-python
+#: code:addons/delivery_envia/models/delivery_carrier.py:0
+msgid "Invalid postal code format. Expected: %s"
+msgstr "Formato de código postal no válido. Se espera: %s"
+
+#. module: delivery_envia
+#. odoo-python
+#: code:addons/delivery_envia/models/delivery_carrier.py:0
+msgid "No rates available for this route."
+msgstr "No hay tarifas para este destino."
+
+#. module: delivery_envia
+#. odoo-python
+#: code:addons/delivery_envia/models/delivery_carrier.py:0
+msgid "No shipping rates available for this destination."
+msgstr "No hay tarifas de envío para este destino."
+
+#. module: delivery_envia
+#. odoo-python
+#: code:addons/delivery_envia/models/delivery_carrier.py:0
+msgid "Not available for this address."
+msgstr "No disponible para esta dirección."
+
+#. module: delivery_envia
+#. odoo-python
+#: code:addons/delivery_envia/models/delivery_carrier.py:0
+msgid "Not available: duties & taxes could not be quoted for this destination."
+msgstr "No disponible: no se pudieron cotizar los impuestos y aranceles para este destino."
+
+#. module: delivery_envia
+#. odoo-python
+#: code:addons/delivery_envia/models/delivery_carrier.py:0
+msgid "Not available: the customs information for this order is incomplete."
+msgstr "No disponible: falta información aduanera de este pedido."
+
+#. module: delivery_envia
+#. odoo-python
+#: code:addons/delivery_envia/models/delivery_carrier.py:0
+msgid "Shipping quote unavailable."
+msgstr "Cotización no disponible."
+
+#. module: delivery_envia
+#. odoo-python
+#: code:addons/delivery_envia/models/delivery_carrier.py:0
+msgid "The shipping service could not quote this route. Please try again; if it persists, check the package configuration."
+msgstr "El servicio de envíos no pudo cotizar este destino. Intenta de nuevo; si sigue, avísanos."
+
+#. module: delivery_envia
+#. odoo-python
+#: code:addons/delivery_envia/models/delivery_carrier.py:0
+msgid "The shipping service timed out. Please try again."
+msgstr "El servicio de envíos tardó demasiado. Intenta de nuevo."

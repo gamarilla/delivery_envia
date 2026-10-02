@@ -30,6 +30,8 @@ def _user_friendly_rate_error(raw_message):
         return _("Invalid postal code format for the destination country.")
     if 'no rates' in lower or 'no rate' in lower:
         return _("No shipping rates available for this destination.")
+    if 'coverage' in lower:
+        return _("Not available for this address.")
     if 'internal error' in lower:
         # The provider answers some malformed/unsupported payloads with nothing
         # but 'Internal error' (HTTP 200, no usable detail). The full request
@@ -40,9 +42,8 @@ def _user_friendly_rate_error(raw_message):
         return _("The shipping service timed out. Please try again.")
     if 'could not connect' in lower or 'connection' in lower:
         return _("Could not reach the shipping service. Please try again later.")
-    if not sanitized:
-        return _("Shipping quote unavailable.")
-    return _("Shipping quote unavailable: %s") % sanitized
+    # anything else is technical detail for the log (rate_shipment already logs it), not for the customer
+    return _("Shipping quote unavailable.")
 
 
 def _envia_shipment_error_message(exc):
